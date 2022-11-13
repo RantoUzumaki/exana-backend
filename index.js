@@ -1,27 +1,72 @@
-import mongoose from "mongoose";
-import express from "express";
-import * as dotenv from "dotenv";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
 const ENV = dotenv.config();
 const app = express();
 
+app.use(cors());
+
+// parse requests of content-type - application/json
+app.use(express.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
 const url = `mongodb+srv://${ENV.parsed.USERNAME_MONGODB}:${ENV.parsed.PASSWORD_MONGODB}@${ENV.parsed.CLUSTER_MONGODB}.ok0wnuj.mongodb.net/?retryWrites=true&w=majority`;
 
-mongoose.connect(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+const db = require("./app/models");
+const Role = db.role;
+
+db.mongoose
+  .connect(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Successfully connect to MongoDB.");
+    // initial();
+  })
+  .catch((err) => {
+    console.error("Connection error", err);
+    process.exit();
+  });
+
+// simple route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to EXANA Backend application." });
 });
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error: "));
-db.once("open", function () {
-  console.log("Connected successfully");
+// routes
+require("./app/routes/auth.routes")(app);
+
+const PORT = 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
 });
 
-app.get("/", function (request, response) {
-  response.send("Hello World!");
-});
+function initial() {
+  Role.estimatedDocumentCount((err, count) => {
+    if (!err && count === 0) {
+      new Role({
+        name: "user",
+      }).save((err) => {
+        if (err) {
+          console.log("error", err);
+        }
 
-app.listen(8080, function () {
-  console.log("Started application on port %d", 8080);
-});
+        console.log("added 'user' to roles collection");
+      });
+
+      new Role({
+        name: "admin",
+      }).save((err) => {
+        if (err) {
+          console.log("error", err);
+        }
+
+        console.log("added 'admin' to roles collection");
+      });
+    }
+  });
+}
