@@ -1,8 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 
-const ENV = dotenv.config();
 const app = express();
 
 app.use(cors());
@@ -13,7 +11,7 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-const url = `mongodb+srv://${ENV.parsed.USERNAME_MONGODB}:${ENV.parsed.PASSWORD_MONGODB}@${ENV.parsed.CLUSTER_MONGODB}.ok0wnuj.mongodb.net/?retryWrites=true&w=majority`;
+const url = `mongodb+srv://exana:Ab9952187416.@exana.ok0wnuj.mongodb.net/?retryWrites=true&w=majority`;
 
 const db = require("./app/models");
 const Role = db.role;
