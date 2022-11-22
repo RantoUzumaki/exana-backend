@@ -1,21 +1,18 @@
-const db = require("../models");
-const ROLES = db.ROLES;
+import db from "../models";
+const ROLES = db.role;
 const User = db.user;
 
-checkDuplicateUsernameOrEmail = (req, res, next) => {
-  // Email
+const checkDuplicateUsernameOrEmail = (req, res, next) => {
   User.findOne({
     email: req.body.email,
   }).exec((err, user) => {
     if (err) {
-      res.status(500).send({ message: err });
+      res.internalServerError(err);
       return;
     }
 
     if (user) {
-      res.status(400).send({
-        message: "Failed! Email is already in use!",
-      });
+      res.forbidden("The email already exist!");
       return;
     }
 
@@ -23,7 +20,31 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
   });
 };
 
-checkRolesExisted = (req, res, next) => {
+const checkPassword = (req, res, next) => {
+  const passformat =
+    /^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^!&*+=]).*$/g;
+  if (req.body.password) {
+    if (req.body.password.length < 8) {
+      res.status(400).send({
+        message: "Password should atleast have 8 minimum characters",
+      });
+      return;
+    }
+
+    if (req.body.password.match(passformat)) {
+    } else {
+      res.status(400).send({
+        message:
+          "Password should contain atleast 1 Capital, 1 Small, 1 Number and 1 Chracater",
+      });
+      return;
+    }
+
+    next();
+  }
+};
+
+const checkRolesExisted = (req, res, next) => {
   if (req.body.roles) {
     for (let i = 0; i < req.body.roles.length; i++) {
       if (!ROLES.includes(req.body.roles[i])) {
@@ -40,7 +61,8 @@ checkRolesExisted = (req, res, next) => {
 
 const verifySignUp = {
   checkDuplicateUsernameOrEmail,
+  checkPassword,
   checkRolesExisted,
 };
 
-module.exports = verifySignUp;
+export default verifySignUp;

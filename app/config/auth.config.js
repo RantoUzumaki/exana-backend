@@ -1,1 +1,1 @@
-module.exports = { secret: "Exana9952187416secKey" };
+export const secret = "Exana9952187416secKey";

@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const config = require("../config/auth.config.js");
-const db = require("../models");
-const User = db.user;
-const Role = db.role;
+import { verify } from "jsonwebtoken";
+import { secret } from "../config/auth.config.js";
+import { user as _user, role } from "../models";
+const User = _user;
+const Role = role;
 
 verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
@@ -11,7 +11,7 @@ verifyToken = (req, res, next) => {
     return res.status(403).send({ message: "No token provided!" });
   }
 
-  jwt.verify(token, config.secret, (err, decoded) => {
+  verify(token, secret, (err, decoded) => {
     if (err) {
       return res.status(401).send({ message: "Unauthorized!" });
     }
@@ -55,4 +55,4 @@ const authJwt = {
   verifyToken,
   isAdmin,
 };
-module.exports = authJwt;
+export default authJwt;
