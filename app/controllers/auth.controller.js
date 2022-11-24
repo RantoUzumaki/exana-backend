@@ -8,6 +8,7 @@ import { sendEmail } from "../libs/mail";
 import path from "path";
 import handlebars from "handlebars";
 import fs from "fs";
+import { generatePassword } from "../libs/random_password";
 
 dotenv.config();
 
@@ -68,6 +69,7 @@ export function signup(req, res) {
           .toString();
         const template = handlebars.compile(source);
         const replacements = {
+          imgUrl: `${protocol}://${host}:${port}/assets/logo.png`,
           username: req.body.firstname,
           fullurl: fullUrl,
         };
@@ -311,5 +313,54 @@ export function verifyAccount(req, res) {
     );
 
     return;
+  });
+}
+
+export function forgetPassword(req, res) {
+  User.findOne({
+    email: req.body.email,
+  }).exec((err, email) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (!email) {
+      return res.status(404).send({ message: "email Not found." });
+    }
+
+    let pass = generatePassword();
+    email.password = bcrypt.hashSync(pass, 8);
+    email.save();
+
+    const filePath = path.dirname("");
+    const protocol = req.protocol;
+    const host = req.hostname;
+    const port = 8080;
+
+    const source = fs
+      .readFileSync(
+        path.join(filePath, "html/forget_password/index.html"),
+        "utf-8"
+      )
+      .toString();
+    const template = handlebars.compile(source);
+    const replacements = {
+      imgUrl: `${protocol}://${host}:${port}/assets/logo.png`,
+      username: email.firstname,
+      password: pass,
+    };
+    const htmlToSend = template(replacements);
+
+    const mailOptions = {
+      from: process.env.MAIL_ID,
+      to: req.body.email,
+      subject: "Forget your password?.",
+      html: htmlToSend,
+    };
+
+    sendEmail(mailOptions);
+
+    res.created(req.body.email, `Email has been sent to your to verify.`);
   });
 }

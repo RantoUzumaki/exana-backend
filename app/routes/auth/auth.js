@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  forgetPassword,
   signin,
   signup,
   verifyAccount,
@@ -17,9 +18,8 @@ router.post(
   ],
   signup
 );
-
 router.post("/login", signin);
-
 router.get("/verifyAccount/:token", verifyAccount);
+router.post("/forgetPassword", forgetPassword);
 
 export default router;
