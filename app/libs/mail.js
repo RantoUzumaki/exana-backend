@@ -15,9 +15,8 @@ export function sendEmail(mailOptions) {
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
-      return error;
     } else {
-      return info;
+      console.log(info);
     }
   });
 }

@@ -329,6 +329,12 @@ export function forgetPassword(req, res) {
       return res.status(404).send({ message: "email Not found." });
     }
 
+    if (!email.verified) {
+      return res
+        .status(404)
+        .send({ message: "Please verify your account first." });
+    }
+
     let pass = generatePassword();
     email.password = bcrypt.hashSync(pass, 8);
     email.save();
