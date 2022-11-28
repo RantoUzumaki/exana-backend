@@ -100,6 +100,7 @@ export function signin(req, res) {
         res.status(500).send({ message: err });
         return;
       }
+      console.log(email);
 
       if (!email) {
         return res.status(404).send({ message: "email Not found." });
@@ -121,17 +122,18 @@ export function signin(req, res) {
         expiresIn: 86400, // 24 hours
       });
 
-      var authorities = [];
+      // var authorities = [];
 
-      for (let i = 0; i < email.roles.length; i++) {
-        authorities.push("ROLE_" + email.roles[i].name.toUpperCase());
-      }
+      // for (let i = 0; i < email.roles.length; i++) {
+      //   authorities.push("ROLE_" + email.roles[i].name.toUpperCase());
+      // }
 
       res.status(200).send({
         id: email._id,
-        username: email.username,
+        firstname: email.firstname,
+        lastname: email.lastname,
         email: email.email,
-        roles: authorities,
+        // roles: authorities,
         accessToken: token,
       });
     });

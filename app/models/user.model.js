@@ -22,7 +22,7 @@ const User = model(
     roles: [
       {
         type: Schema.Types.ObjectId,
-        ref: "UserDetail",
+        ref: "Role",
       },
     ],
   })
