@@ -100,10 +100,13 @@ export function signin(req, res) {
         res.status(500).send({ message: err });
         return;
       }
-      console.log(email);
 
       if (!email) {
         return res.status(404).send({ message: "email Not found." });
+      }
+
+      if(!email.verified) {
+        return res.noContent("Please verify your account")
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -122,18 +125,18 @@ export function signin(req, res) {
         expiresIn: 86400, // 24 hours
       });
 
-      // var authorities = [];
+      var authorities = [];
 
-      // for (let i = 0; i < email.roles.length; i++) {
-      //   authorities.push("ROLE_" + email.roles[i].name.toUpperCase());
-      // }
+      for (let i = 0; i < email.roles.length; i++) {
+        authorities.push("ROLE_" + email.roles[i].name.toUpperCase());
+      }
 
       res.status(200).send({
         id: email._id,
         firstname: email.firstname,
         lastname: email.lastname,
         email: email.email,
-        // roles: authorities,
+        roles: authorities,
         accessToken: token,
       });
     });
@@ -331,12 +334,6 @@ export function forgetPassword(req, res) {
       return res.status(404).send({ message: "email Not found." });
     }
 
-    if (!email.verified) {
-      return res
-        .status(404)
-        .send({ message: "Please verify your account first." });
-    }
-
     let pass = generatePassword();
     email.password = bcrypt.hashSync(pass, 8);
     email.save();
@@ -371,4 +368,36 @@ export function forgetPassword(req, res) {
 
     res.created(req.body.email, `Email has been sent to your to verify.`);
   });
+}
+
+export function sendHtmlEmail(req, res) {
+  const protocol = req.protocol;
+  const host = req.hostname;
+  const port = 8080;
+  
+  const filePath = path.dirname("");
+  
+  const source = fs
+      .readFileSync(
+          path.join(filePath, "html/email.html"),
+          "utf-8"
+      )
+      .toString();
+
+  const template = handlebars.compile(source);
+  const replacements = {
+      UserName: "Ranto",
+  };
+  const htmlToSend = template(replacements);
+
+  const mailOptions = {
+      from: process.env.MAIL_ID,
+      to: req.body.email,
+      subject: "Welcome to EXANA.",
+      html: htmlToSend,
+  };
+
+  sendEmail(mailOptions);
+
+  res.created(req.body.email, `Email has been sent to your to verify.`);
 }

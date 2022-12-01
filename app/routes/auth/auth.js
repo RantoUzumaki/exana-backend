@@ -1,6 +1,7 @@
 import express from "express";
 import {
   forgetPassword,
+  sendHtmlEmail,
   signin,
   signup,
   verifyAccount,
@@ -21,5 +22,6 @@ router.post(
 router.post("/login", signin);
 router.get("/verifyAccount/:token", verifyAccount);
 router.post("/forgetPassword", forgetPassword);
+router.post("/email", sendHtmlEmail);
 
 export default router;
