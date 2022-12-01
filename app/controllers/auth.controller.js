@@ -387,15 +387,15 @@ export function sendHtmlEmail(req, res) {
 
   const replacements = {
       logoUrl: `${protocol}://${host}:${port}/assets/logo.png`,
-      emj1: `${protocol}://${host}:${port}/assets/01-emj.svg`,
-      emj2: `${protocol}://${host}:${port}/assets/02-emj.svg`,
-      emj3: `${protocol}://${host}:${port}/assets/03-emj.svg`,
-      emj4: `${protocol}://${host}:${port}/assets/04-emj.svg`,
-      emj5: `${protocol}://${host}:${port}/assets/05-emj.svg`,
-      star: `${protocol}://${host}:${port}/assets/star.svg`,
+      emj1: `${protocol}://${host}:${port}/assets/01-emj.png`,
+      emj2: `${protocol}://${host}:${port}/assets/02-emj.png`,
+      emj3: `${protocol}://${host}:${port}/assets/03-emj.png`,
+      emj4: `${protocol}://${host}:${port}/assets/04-emj.png`,
+      emj5: `${protocol}://${host}:${port}/assets/05-emj.png`,
+      star: `${protocol}://${host}:${port}/assets/star.png`,
       username: "Ranto",
   };
-  
+
   const htmlToSend = template(replacements);
 
   const mailOptions = {
