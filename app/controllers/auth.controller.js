@@ -382,7 +382,9 @@ export function sendHtmlEmail(req, res) {
           "utf-8"
       )
       .toString();
+
   const template = handlebars.compile(source);
+
   const replacements = {
       logoUrl: `${protocol}://${host}:${port}/assets/logo.png`,
       emj1: `${protocol}://${host}:${port}/assets/01-emj.svg`,
@@ -392,8 +394,8 @@ export function sendHtmlEmail(req, res) {
       emj5: `${protocol}://${host}:${port}/assets/05-emj.svg`,
       star: `${protocol}://${host}:${port}/assets/star.svg`,
       username: "Ranto",
-      password: pass,
   };
+  
   const htmlToSend = template(replacements);
 
   const mailOptions = {
