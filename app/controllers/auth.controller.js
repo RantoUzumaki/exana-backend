@@ -371,22 +371,28 @@ export function forgetPassword(req, res) {
 }
 
 export function sendHtmlEmail(req, res) {
+  const filePath = path.dirname("");
   const protocol = req.protocol;
   const host = req.hostname;
   const port = 8080;
-  
-  const filePath = path.dirname("");
-  
+
   const source = fs
       .readFileSync(
           path.join(filePath, "html/email.html"),
           "utf-8"
       )
       .toString();
-
   const template = handlebars.compile(source);
   const replacements = {
-      UserName: "Ranto",
+      logoUrl: `${protocol}://${host}:${port}/assets/logo.png`,
+      emj1: `${protocol}://${host}:${port}/assets/01-emj.svg`,
+      emj2: `${protocol}://${host}:${port}/assets/02-emj.svg`,
+      emj3: `${protocol}://${host}:${port}/assets/03-emj.svg`,
+      emj4: `${protocol}://${host}:${port}/assets/04-emj.svg`,
+      emj5: `${protocol}://${host}:${port}/assets/05-emj.svg`,
+      star: `${protocol}://${host}:${port}/assets/star.svg`,
+      username: "Ranto",
+      password: pass,
   };
   const htmlToSend = template(replacements);
 
