@@ -14,153 +14,158 @@ dotenv.config();
 
 const User = db.user;
 const Role = db.role;
+const Aadhaar = db.aadhaar;
+const Pan = db.pan;
 
 export function signup(req, res) {
-  const token = crypto
-    .createHash("md5")
-    .update(Math.random().toString().substring(2))
-    .digest("hex");
+	const token = crypto
+		.createHash("md5")
+		.update(Math.random().toString().substring(2))
+		.digest("hex");
 
-  const user = new User({
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8),
-    token: token,
-  });
+	const user = new User({
+		firstname: req.body.firstname,
+		lastname: req.body.lastname,
+		email: req.body.email,
+		password: bcrypt.hashSync(req.body.password, 8),
+		token: token,
+	});
 
-  user.save((err, user) => {
-    if (err) {
-      res.internalServerError(err);
-      return;
-    }
+	user.save((err, user) => {
+		if (err) {
+			res.status(500).json({ error: err });
+			return;
+		}
 
-    Role.find(
-      {
-        name: { $in: "user" },
-      },
-      (err, roles) => {
-        if (err) {
-          res.internalServerError(err);
-          return;
-        }
+		Role.find(
+			{
+				name: { $in: "user" },
+			},
+			(err, roles) => {
+				if (err) {
+					res.status(500).json({ error: err });
+					return;
+				}
 
-        user.roles = roles.map((role) => role._id);
-        user.save((err) => {
-          if (err) {
-            res.internalServerError(err);
-            return;
-          }
-        });
+				user.roles = roles.map((role) => role._id);
+				user.save((err) => {
+					if (err) {
+						res.status(500).json({ error: err });
+						return;
+					}
+				});
 
-        const protocol = req.protocol;
-        const host = req.hostname;
-        const url = "/api/v1/verifyAccount";
-        const port = 8080;
-        const fullUrl = `${protocol}://${host}:${port}${url}/${token}`;
+				const protocol = req.protocol;
+				const host = req.hostname;
+				const url = "/api/v1/verifyAccount";
+				const port = 8080;
+				const fullUrl = `${protocol}://${host}:${port}${url}/${token}`;
 
-        const filePath = path.dirname("");
+				const filePath = path.dirname("");
 
-        const source = fs
-          .readFileSync(
-            path.join(filePath, "html/account_created/index.html"),
-            "utf-8"
-          )
-          .toString();
-        const template = handlebars.compile(source);
-        const replacements = {
-          imgUrl: `${protocol}://${host}:${port}/assets/logo.png`,
-          username: req.body.firstname,
-          fullurl: fullUrl,
-        };
-        const htmlToSend = template(replacements);
+				const source = fs
+					.readFileSync(
+						path.join(filePath, "html/account_created/index.html"),
+						"utf-8",
+					)
+					.toString();
+				const template = handlebars.compile(source);
+				const replacements = {
+					imgUrl: `${protocol}://${host}:${port}/assets/logo.png`,
+					username: req.body.firstname,
+					fullurl: fullUrl,
+				};
+				const htmlToSend = template(replacements);
 
-        const mailOptions = {
-          from: process.env.MAIL_ID,
-          to: req.body.email,
-          subject: "Welcome to EXANA.",
-          html: htmlToSend,
-        };
+				const mailOptions = {
+					from: process.env.MAIL_ID,
+					to: req.body.email,
+					subject: "Welcome to EXANA.",
+					html: htmlToSend,
+				};
 
-        sendEmail(mailOptions);
+				sendEmail(mailOptions);
 
-        res.created(req.body.email, `Email has been sent to your to verify.`);
-      }
-    );
-  });
+				res.status(201).json({
+					success: {
+						email: req.body.email,
+						message: "Email has been sent to your to verify.",
+					},
+				});
+				return;
+			},
+		);
+	});
 }
 
 export function signin(req, res) {
-  User.findOne({
-    email: req.body.email,
-  })
-    .populate("roles", "-__v")
-    .exec((err, email) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
+	User.findOne({
+		email: req.body.email,
+	})
+		.populate("roles", "-__v")
+		.exec((err, email) => {
+			if (err) {
+				res.status(500).json({ error: err });
+				return;
+			}
 
-      if (!email) {
-        return res.status(404).send({ message: "email Not found." });
-      }
+			if (!email) {
+				res.status(401).json({ error: "Email not found." });
+				return;
+			}
 
-      if(!email.verified) {
-        return res.noContent("Please verify your account")
-      }
+			if (!email.verified) {
+				res.status(401).json({ error: "Please verify yout email." });
+				return;
+			}
 
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        email.password
-      );
+			var passwordIsValid = bcrypt.compareSync(
+				req.body.password,
+				email.password,
+			);
 
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!",
-        });
-      }
+			if (!passwordIsValid) {
+				res.status(401).json({ error: "Wrong Password." });
+				return;
+			}
 
-      var token = jwt.sign({ id: email.id }, secret, {
-        expiresIn: 86400, // 24 hours
-      });
+			var token = jwt.sign({ id: email.id }, secret, {
+				expiresIn: 86400, // 24 hours
+			});
 
-      var authorities = [];
+			var authorities = [];
 
-      for (let i = 0; i < email.roles.length; i++) {
-        authorities.push("ROLE_" + email.roles[i].name.toUpperCase());
-      }
+			for (let i = 0; i < email.roles.length; i++) {
+				authorities.push("ROLE_" + email.roles[i].name.toUpperCase());
+			}
 
-      res.status(200).send({
-        id: email._id,
-        firstname: email.firstname,
-        lastname: email.lastname,
-        email: email.email,
-        roles: authorities,
-        accessToken: token,
-      });
-    });
+			res.status(200).json({
+				success: {
+					roles: authorities,
+					accessToken: token,
+					data: {
+						email: email.email,
+						firstName: email.firstname,
+						lastName: email.lastname,
+					},
+					message: "Successfully signed in",
+				},
+			});
+			return;
+		});
 }
 
 export function verifyAccount(req, res) {
-  const { token } = req.params;
+	const { token } = req.params;
 
-  User.findOne({
-    token: token,
-  }).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+	User.findOne({
+		token: token,
+	}).exec((err, user) => {
+		res.setHeader("Content-type", "text/html");
 
-    if (!user) {
-      return res.status(404).send({ message: "User Not found." });
-    }
-    res.setHeader("Content-type", "text/html");
-
-    if (user.verified) {
-      res.write(
-        `<style>
+		if (user.verified) {
+			res.write(
+				`<style>
           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;800&display=swap');
 
           body {
@@ -232,17 +237,18 @@ export function verifyAccount(req, res) {
           setTimeout(() => {
             window.close()
           }, 6000)
-        </script>`
-      );
+        </script>`,
+			);
 
-      return;
-    }
+			return;
+		}
 
-    user.verified = true;
-    user.save();
+		user.verified = true;
+		user.token = "";
+		user.save();
 
-    res.write(
-      `<style>
+		res.write(
+			`<style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;800&display=swap');
 
         body {
@@ -314,98 +320,187 @@ export function verifyAccount(req, res) {
         setTimeout(() => {
           window.close()
         }, 6000)
-      </script>`
-    );
+      </script>`,
+		);
 
-    return;
-  });
+		return;
+	});
 }
 
 export function forgetPassword(req, res) {
-  User.findOne({
-    email: req.body.email,
-  }).exec((err, email) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+	User.findOne({
+		email: req.body.email,
+	}).exec((err, email) => {
+		if (err) {
+			res.status(500).json({ error: err });
+			return;
+		}
 
-    if (!email) {
-      return res.status(404).send({ message: "email Not found." });
-    }
+		if (!email) {
+			res.status(401).json({ error: "Email not found." });
+			return;
+		}
 
-    let pass = generatePassword();
-    email.password = bcrypt.hashSync(pass, 8);
-    email.save();
+		let pass = generatePassword();
+		email.password = bcrypt.hashSync(pass, 8);
+		email.save();
 
-    const filePath = path.dirname("");
-    const protocol = req.protocol;
-    const host = req.hostname;
-    const port = 8080;
+		const filePath = path.dirname("");
+		const protocol = req.protocol;
+		const host = req.hostname;
+		const port = 8080;
 
-    const source = fs
-      .readFileSync(
-        path.join(filePath, "html/forget_password/index.html"),
-        "utf-8"
-      )
-      .toString();
-    const template = handlebars.compile(source);
-    const replacements = {
-      imgUrl: `${protocol}://${host}:${port}/assets/logo.png`,
-      username: email.firstname,
-      password: pass,
-    };
-    const htmlToSend = template(replacements);
+		const source = fs
+			.readFileSync(
+				path.join(filePath, "html/forget_password/index.html"),
+				"utf-8",
+			)
+			.toString();
+		const template = handlebars.compile(source);
+		const replacements = {
+			imgUrl: `${protocol}://${host}:${port}/assets/logo.png`,
+			username: email.firstname,
+			password: pass,
+		};
+		const htmlToSend = template(replacements);
 
-    const mailOptions = {
-      from: process.env.MAIL_ID,
-      to: req.body.email,
-      subject: "Forget your password?.",
-      html: htmlToSend,
-    };
+		const mailOptions = {
+			from: process.env.MAIL_ID,
+			to: req.body.email,
+			subject: "Forget your password?.",
+			html: htmlToSend,
+		};
 
-    sendEmail(mailOptions);
+		sendEmail(mailOptions);
 
-    res.created(req.body.email, `Email has been sent to your to verify.`);
-  });
+		res.status(201).json({ success: "Check email for temperory password" });
+		return;
+	});
+}
+
+export function userDetail(req, res) {
+	User.findOne({
+		_id: req.userId,
+	})
+		.populate("roles", "-__v")
+		.exec((err, user) => {
+			if (err) {
+				res.status(500).json({ error: err });
+				return;
+			}
+
+			let authorities = [];
+
+			for (let i = 0; i < user.roles.length; i++) {
+				authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+			}
+
+			let aadhaarDetails = {
+				data: null,
+				message: "",
+			};
+
+			Aadhaar.find({
+				user: req.userId,
+			}).then((aadhaar) => {
+				if (!aadhaar) {
+					aadhaarDetails.data = null;
+				} else {
+					aadhaarDetails.data = aadhaar;
+				}
+			});
+
+			res.status(200).json({
+				success: {
+					roles: authorities,
+					data: {
+						firstName: user.firstname || "",
+						lastName: user.lastname || "",
+						email: user.email,
+						password: "",
+						address1: user.address1 || "",
+						address2: user.address2 || "",
+						city: user.city || "",
+						district: user.district || "",
+						state: user.state || "",
+						country: user.country || "",
+						pincode: user.pincode || "",
+					},
+				},
+			});
+			return;
+		});
+}
+
+export function updateUserDetail(req, res) {
+	const data = {
+		firstname: req.body.firstname,
+		lastname: req.body.lastname,
+		countryCode: req.body.countryCode,
+		phoneNumber: req.body.phoneNumber,
+		address1: req.body.address1,
+		address2: req.body.address2,
+		city: req.body.city,
+		district: req.body.district,
+		state: req.body.state,
+		country: req.body.country,
+		pincode: req.body.pincode,
+	};
+	console.log(data);
+
+	User.findOneAndUpdate(
+		{
+			_id: req.userId,
+		},
+		data,
+	)
+		.then(() => {
+			res.status(201).json({
+				success: {
+					message: "Details has been updated successfully.",
+				},
+			});
+			return;
+		})
+		.catch((err) => {
+			res.status(500).json({ error: err });
+			return;
+		});
 }
 
 export function sendHtmlEmail(req, res) {
-  const filePath = path.dirname("");
-  const protocol = req.protocol;
-  const host = req.hostname;
-  const port = 8080;
+	const filePath = path.dirname("");
+	const protocol = req.protocol;
+	const host = req.hostname;
+	const port = 8080;
 
-  const source = fs
-      .readFileSync(
-          path.join(filePath, "html/email.html"),
-          "utf-8"
-      )
-      .toString();
+	const source = fs
+		.readFileSync(path.join(filePath, "html/email.html"), "utf-8")
+		.toString();
 
-  const template = handlebars.compile(source);
+	const template = handlebars.compile(source);
 
-  const replacements = {
-      logoUrl: `${protocol}://${host}:${port}/assets/logo.png`,
-      emj1: `${protocol}://${host}:${port}/assets/01-emj.png`,
-      emj2: `${protocol}://${host}:${port}/assets/02-emj.png`,
-      emj3: `${protocol}://${host}:${port}/assets/03-emj.png`,
-      emj4: `${protocol}://${host}:${port}/assets/04-emj.png`,
-      emj5: `${protocol}://${host}:${port}/assets/05-emj.png`,
-      star: `${protocol}://${host}:${port}/assets/star.png`,
-      username: "Ranto",
-  };
+	const replacements = {
+		// logoUrl: `${protocol}://${host}:${port}/assets/logo.png`,
+		// emj1: `${protocol}://${host}:${port}/assets/01-emj.png`,
+		// emj2: `${protocol}://${host}:${port}/assets/02-emj.png`,
+		// emj3: `${protocol}://${host}:${port}/assets/03-emj.png`,
+		// emj4: `${protocol}://${host}:${port}/assets/04-emj.png`,
+		// emj5: `${protocol}://${host}:${port}/assets/05-emj.png`,
+		// star: `${protocol}://${host}:${port}/assets/star.png`,
+		username: "Ranto",
+	};
 
-  const htmlToSend = template(replacements);
+	const htmlToSend = template(replacements);
+	const mailOptions = {
+		from: process.env.MAIL_ID,
+		to: req.body.email,
+		subject: "Forget your password?.",
+		html: htmlToSend,
+	};
 
-  const mailOptions = {
-      from: process.env.MAIL_ID,
-      to: req.body.email,
-      subject: "Welcome to EXANA.",
-      html: htmlToSend,
-  };
+	sendEmail(mailOptions);
 
-  sendEmail(mailOptions);
-
-  res.created(req.body.email, `Email has been sent to your to verify.`);
+	res.status(201).json({ success: "Check email for temperory password" });
+	return;
 }

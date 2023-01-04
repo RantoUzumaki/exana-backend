@@ -1,0 +1,47 @@
+{
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [
+      80
+    ],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": false
+  },
+  "workbench.iconTheme": "developer-icon-theme",
+  "workbench.productIconTheme": "developer-icons",
+  "dart.flutterRunAdditionalArgs": [
+    "--no-sound-null-safety"
+  ],
+  "workbench.startupEditor": "none",
+  "workbench.colorTheme": "GitHub Dark Colorblind (Beta)",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "files.associations": {
+    "*.js": "javascriptreact"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.useTabs": true,
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "editor.useTabStops": false,
+  "editor.insertSpaces": false,
+  "editor.tabSize": 2,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "npm.keybindingsChangedWarningShown": true,
+  "prettier.trailingComma": "all",
+  "git.confirmSync": false,
+  "security.workspace.trust.untrustedFiles": "newWindow"
+}

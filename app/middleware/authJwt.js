@@ -1,58 +1,63 @@
-import { verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { secret } from "../config/auth.config.js";
-import { user as _user, role } from "../models";
-const User = _user;
-const Role = role;
+import db from "../models";
 
-verifyToken = (req, res, next) => {
-  let token = req.headers["x-access-token"];
+const User = db.user;
+const Role = db.role;
 
-  if (!token) {
-    return res.status(403).send({ message: "No token provided!" });
-  }
+const verifyToken = (req, res, next) => {
+	let token = req.headers["x-access-token"];
 
-  verify(token, secret, (err, decoded) => {
-    if (err) {
-      return res.status(401).send({ message: "Unauthorized!" });
-    }
-    req.userId = decoded.id;
-    next();
-  });
+	if (!token) {
+		res.status(403).json({ error: "No token provided" });
+		return;
+	}
+
+	jwt.verify(token, secret, (err, decoded) => {
+		if (err) {
+			res.status(401).json({ error: err });
+			return;
+		}
+
+		req.userId = decoded.id;
+		next();
+	});
 };
 
-isAdmin = (req, res, next) => {
-  User.findById(req.userId).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+const isAdmin = (req, res, next) => {
+	User.findById(req.userId).exec((err, user) => {
+		if (err) {
+			res.status(500).json({ error: err });
+			return;
+		}
 
-    Role.find(
-      {
-        _id: { $in: user.roles },
-      },
-      (err, roles) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
+		Role.find(
+			{
+				_id: { $in: user.roles },
+			},
+			(err, roles) => {
+				if (err) {
+					res.status(500).json({ error: err });
+					return;
+				}
 
-        for (let i = 0; i < roles.length; i++) {
-          if (roles[i].name === "admin") {
-            next();
-            return;
-          }
-        }
+				for (let i = 0; i < roles.length; i++) {
+					if (roles[i].name === "admin") {
+						next();
+						return;
+					}
+				}
 
-        res.status(403).send({ message: "Require Admin Role!" });
-        return;
-      }
-    );
-  });
+				res.status(403).json({ error: "Required Admin Role." });
+				return;
+			},
+		);
+	});
 };
 
 const authJwt = {
-  verifyToken,
-  isAdmin,
+	verifyToken,
+	isAdmin,
 };
+
 export default authJwt;

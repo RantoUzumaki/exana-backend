@@ -1,561 +1,195 @@
-<html>
-  <head>
-    <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1"
-    />
-    <style type="text/css">
-      .test1 {
-        width: 662px;
-        margin: auto auto auto 10%;
-      }
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-      .test1 tbody {
-        width: 662px;
-      }
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+			rel="stylesheet"
+		/>
 
-      .btn-grp .nps {
-        text-decoration: none;
-        background-color: #fff;
-        width: 40px;
-        height: 40px;
-        margin-top: 18px;
-        font-size: 14px;
-        font-weight: 600;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-        color: #2772ea;
-        padding: 0;
-        margin-right: 6px;
-        display: inline-block;
-        cursor: pointer;
-        line-height: 40px;
-      }
+		<title>EMAIL TEMPLATE</title>
 
-      .btn-grp .ces {
-        text-decoration: none;
-        background-color: #fafafa;
-        width: 40px;
-        height: 40px;
-        margin-top: 18px;
-        font-size: 14px;
-        font-weight: 600;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 999px;
-        color: #2772ea;
-        padding: 0;
-        margin-right: 6px;
-        display: inline-block;
-        cursor: pointer;
-        line-height: 40px;
-      }
+		<style>
+			body {
+				font-family: "Montserrat", sans-serif;
+				margin: 0px;
+				padding: 0px;
+			}
 
-      .btn-grp .csat {
-        text-decoration: none;
-        width: 95px;
-        margin-top: 18px;
-        font-size: 12px;
-        font-weight: 600;
-        color: #2772ea;
-        padding: 0;
-        margin-right: 12px;
-        display: inline-block;
-        cursor: pointer;
-        line-height: 40px;
-        text-align: center;
-      }
+			table {
+				width: 650px;
+			}
 
-      .btn-grp .csat img {
-        width: 40px;
-        height: 40px;
-        margin: auto;
-      }
+			.score-wrapper {
+				display: flex;
+				text-align: center;
+				margin-top: 30px;
+			}
 
-      .btn-grp .star {
-        text-decoration: none;
-        width: max-content;
-        margin-top: 18px;
-        font-size: 12px;
-        font-weight: 600;
-        color: #2772ea;
-        padding: 0;
-        margin-right: 12px;
-        display: inline-block;
-        cursor: pointer;
-        line-height: 40px;
-        text-align: center;
-      }
+			.card {
+				width: 120px;
+				height: 120px;
+				vertical-align: center;
+				text-align: center;
+				border-radius: 8px;
+				border: 1px solid rgba(0, 0, 0, 0.15);
+				padding: 12px;
+			}
 
-      .btn-grp .star img {
-        width: 40px;
-        height: 40px;
-        margin: auto;
-        fill: #2772ea;
-      }
+			.loginBtn {
+				width: max-content;
+				height: max-content;
+				padding: 12px 16px;
+				text-decoration: none;
+				font-weight: 500;
+				font-size: 13px;
+				color: #fff !important;
+				background-color: #2772ea;
+				border-radius: 6px;
+			}
+		</style>
+	</head>
 
-      @media (max-width: 660px) {
-        .test1 {
-          width: 100%;
-          margin: 0;
-        }
-
-        .test1 tbody {
-          width: 100%;
-        }
-
-        .btn-grp .nps {
-          width: 30px;
-          height: 30px;
-          font-size: 10px;
-          line-height: 30px;
-        }
-
-        .btn-grp .ces {
-          width: 30px;
-          height: 30px;
-          font-size: 10px;
-          line-height: 30px;
-        }
-
-        .btn-grp .csat {
-          width: 80px;
-          font-size: 10px;
-          margin-right: 6px;
-          line-height: 30px;
-        }
-
-        .btn-grp .star {
-          font-size: 10px;
-          margin-right: 6px;
-          line-height: 30px;
-        }
-
-        .btn-grp .star svg {
-          width: 30px;
-          height: 30px;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .btn-grp .nps {
-          width: 25px;
-          height: 25px;
-          margin-right: 4px;
-          line-height: 25px;
-        }
-
-        .btn-grp .ces {
-          width: 25px;
-          height: 25px;
-          margin-right: 4px;
-          line-height: 25px;
-        }
-
-        .btn-grp .csat {
-          width: 60px;
-          font-weight: 500;
-          margin-right: 4px;
-          line-height: 18px;
-        }
-
-        .btn-grp .star {
-          line-height: 18px;
-        }
-
-        .btn-grp .star svg {
-          width: 25px;
-          height: 25px;
-        }
-      }
-
-      @media (max-width: 402px) {
-        .btn-grp .nps {
-          width: 20px;
-          height: 20px;
-          line-height: 20px;
-        }
-
-        .btn-grp .ces {
-          width: 20px;
-          height: 20px;
-          line-height: 20px;
-        }
-
-        .btn-grp .csat {
-          width: 50px;
-          line-height: 15px;
-          text-align: center;
-        }
-      }
-    </style>
-  </head>
-
-  <body
-    style="
-      margin: 0px;
-      padding: 0px;
-      font-family: 'open sans', 'helvetica neue', sans-serif;
-    "
-  >
-    <div
-      style="
-        width: 100vw;
-        height: max-content;
-        background-color: #fafafa;
-        padding: 30px 0 80px;
-      "
-    >
-      <table
-        class="test1"
-        align="center"
-        style="
-          background-color: #fff;
-          padding: 18px;
-          border-radius: 8px;
-        "
-      >
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-          >
-            <img
-              height="30px"
-              src="{{logoUrl}}"
-            />
-          </td>
-        </tr>
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-          >
-            <h5
-              style="
-                font-size: 13px;
-                font-weight: 500;
-                margin: 18px 0 0 !important;
-                color: #3c3e4d;
-              "
-            >
-              Hello {{username}}, This is the header part
-            </h5>
-          </td>
-        </tr>
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-          >
-            <h5
-              style="
-                font-size: 14px;
-                color: #001f3d;
-                opacity: 0.7;
-                font-weight: 400;
-                margin: 8px 0 0 !important;
-              "
-            >
-              TThis si the subheader part where all the contents from
-              subheader goes
-            </h5>
-          </td>
-        </tr>
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-          >
-            <h5
-              style="
-                font-size: 16px;
-                font-weight: 500;
-                margin: 18px 0 0 !important;
-              "
-            >
-              This is the question that is going to be the survey
-              survey question?
-            </h5>
-          </td>
-        </tr>
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-            style="height: 60px; width: 100%"
-            class="btn-grp"
-          >
-            <!-- NPS Survey UI -->
-            <a
-              class="nps"
-              href="https:///www.google.com/0"
-              target="_blank"
-              >0</a
-            >
-          </td>
-        </tr>
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-            style="height: 60px; width: 100%"
-            class="btn-grp"
-          >
-            <!-- CSAT Rating -->
-            <a
-              class="csat"
-              href="https:///www.google.com/9"
-              target="_blank"
-              ><div style="display: grid">
-                <img
-                  src="{{emj1}}"
-                  alt="emoji 1"
-                />
-                <span>Very Unsatisfied</span>
-              </div></a
-            >
-            <a
-              class="csat"
-              href="https:///www.google.com/9"
-              target="_blank"
-              ><div style="display: grid">
-                <img
-                  src="{{emj2}}"
-                  alt="emoji 2"
-                />
-                <span>Unsatisfied</span>
-              </div></a
-            >
-            <a
-              class="csat"
-              href="https:///www.google.com/9"
-              target="_blank"
-              ><div style="display: grid">
-                <img
-                  src="{{emj3}}"
-                  alt="emoji 3"
-                />
-                <span>Neutral</span>
-              </div></a
-            >
-            <a
-              class="csat"
-              href="https:///www.google.com/9"
-              target="_blank"
-              ><div style="display: grid">
-                <img
-                  src="{{emj4}}"
-                  alt="emoji 4"
-                />
-                <span>Satisfied</span>
-              </div></a
-            >
-            <a
-              class="csat"
-              href="https:///www.google.com/9"
-              target="_blank"
-              ><div style="display: grid">
-                <img
-                  src="{{emj5}}"
-                  alt="emoji 5"
-                />
-                <span>Very Satisfied</span>
-              </div></a
-            >
-          </td>
-        </tr>
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-            style="height: 60px; width: 100%"
-            class="btn-grp"
-          >
-            <!-- CES Survey UI -->
-            <a
-              class="ces"
-              href="https:///www.google.com/1"
-              target="_blank"
-              >1</a
-            >
-          </td>
-        </tr>
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-            style="height: 60px; width: 100%"
-            class="btn-grp"
-          >
-            <!-- STAR Rating -->
-            <a
-              class="star"
-              href="https:///www.google.com/9"
-              target="_blank"
-              ><div style="display: grid">
-                <img
-                  src="{{star}}"
-                  alt="emoji 5"
-                />
-                <span>1</span>
-              </div></a
-            >
-          </td>
-        </tr>
-        <tr>
-          <!-- NPS Rating Text -->
-          <!-- <td style="display: flex; margin-top: 4px">
-            <span
-              style="
-                color: #001f3d;
-                opacity: 0.7;
-                font-size: 12px;
-                width: 100%;
-              "
-              >Very Unsatisfied</span
-            >
-            <span
-              style="
-                color: #001f3d;
-                opacity: 0.7;
-                font-size: 12px;
-                width: 100%;
-                text-align: end;
-              "
-              >Very Satisfied</span
-            >
-          </td> -->
-
-          <!-- CES Rating Text -->
-          <td style="display: flex; margin: 4px auto 0; width: 70%">
-            <span
-              style="
-                color: #001f3d;
-                opacity: 0.7;
-                font-size: 12px;
-                width: 100%;
-              "
-              >Strongly Disagree</span
-            >
-            <span
-              style="
-                color: #001f3d;
-                opacity: 0.7;
-                font-size: 12px;
-                width: 100%;
-                text-align: end;
-              "
-              >Strongly Agree</span
-            >
-          </td>
-        </tr>
-        <tr>
-          <td
-            border="0"
-            align="center"
-            cellpadding="0"
-            cellspacing="0"
-          >
-            <h5
-              style="
-                font-weight: 200;
-                color: #001f3d;
-                margin: 18px 0 0;
-                text-align: start;
-                font-size: 12px;
-              "
-            >
-              Cheers,
-            </h5>
-            <h4
-              style="
-                font-size: 14px;
-                font-weight: 500;
-                color: rgb(71, 75, 82);
-                text-align: start;
-                margin: 6px 0 0;
-              "
-            >
-              The Team
-            </h4>
-          </td>
-        </tr>
-      </table>
-      <table align="center" class="test1" style="padding: 18px 0">
-        <tr>
-          <td style="display: flex; width: 100%">
-            <a
-              style="
-                text-decoration: none;
-                font-size: 11px;
-                color: #001f3d;
-                opacity: 0.5;
-                cursor: pointer;
-              "
-              href="https://www.google.com/"
-              >View in Browser</a
-            >
-            <div
-              style="
-                background-color: rgba(0, 0, 0, 0.1);
-                width: 1px;
-                height: 12px;
-                margin: 0 6px;
-              "
-            ></div>
-            <a
-              style="
-                text-decoration: none;
-                font-size: 11px;
-                color: #001f3d;
-                opacity: 0.5;
-                cursor: pointer;
-              "
-              href="https://www.google.com/"
-              >Unsubscrive</a
-            >
-          </td>
-        </tr>
-        <tr align="center">
-          <td align="center">
-            <div style="display: flex">
-              <span
-                style="
-                  color: #001f3d;
-                  width: 50%;
-                  opacity: 0.7;
-                  font-size: 12px;
-                  margin-top: 4px;
-                  text-align: end;
-                "
-                >Powered By</span
-              >
-              <img
-                height="20px"
-                src="{{logoUrl}}"
-                alt="Brand logo"
-                style="margin-left: 6px"
-              />
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </body>
+	<body>
+		<div
+			style="
+				width: 100%;
+				height: max-content;
+				background-color: #fafafa;
+				padding: 30px 0 80px;
+			"
+		>
+			<table
+				align="center"
+				style="background-color: #fff; padding: 18px; border-radius: 8px"
+			>
+				<tr>
+					<td border="0" align="center" cellpadding="0" cellspacing="0">
+						<h3 style="font-weight: 600; margin: 6px 0 12px; color: #2772ea">
+							Weekly Summary for Survey Name
+						</h3>
+					</td>
+				</tr>
+				<tr>
+					<td border="0" align="center" cellpadding="0" cellspacing="0">
+						<p style="font-size: 14px; font-weight: 500; margin-bottom: 12px">
+							Monday, November 21 - Monday, December 5
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td border="0" align="center" cellpadding="0" cellspacing="0">
+						<p style="margin-bottom: 12px">
+							Hi Ryan P, Hope your week is going well!
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td border="0" align="center" cellpadding="0" cellspacing="0">
+						<p style="width: 75%; line-height: 22px">
+							Want to know what your team accomplished over the last
+							<strong>14 days?</strong> Here's a bried summary!
+						</p>
+					</td>
+				</tr>
+			</table>
+			<table
+				align="center"
+				style="background-color: #fff; padding: 18px; border-radius: 8px"
+			>
+				<tr>
+					<td border="0" align="center" cellpadding="0" cellspacing="0">
+						<div class="card">
+							<h3
+								style="
+									padding-top: 18px;
+									color: #2772ea;
+									font-size: 32px;
+									margin: 0 0 8px;
+								"
+							>
+								0
+							</h3>
+							<span style="font-size: 18px; color: #3f3f3f">New Response</span>
+						</div>
+					</td>
+					<td border="0" align="center" cellpadding="0" cellspacing="0">
+						<div class="card">
+							<h3
+								style="
+									padding-top: 18px;
+									color: #2772ea;
+									font-size: 32px;
+									margin: 0 0 8px;
+								"
+							>
+								0%
+							</h3>
+							<span style="font-size: 18px; color: #5e5e5e">Response Rate</span>
+						</div>
+					</td>
+					<td border="0" align="center" cellpadding="0" cellspacing="0">
+						<div class="card">
+							<h3
+								style="
+									padding-top: 18px;
+									color: #2772ea;
+									font-size: 32px;
+									margin: 0 0 8px;
+								"
+							>
+								0%
+							</h3>
+							<span style="font-size: 18px; color: #5e5e5e"
+								>Completion Rate</span
+							>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<table
+				align="center"
+				style="
+					background-color: #fff;
+					padding: 18px 18px 36px;
+					border-radius: 8px;
+				"
+			>
+				<tr>
+					<td border="0" align="center" cellpadding="0" cellspacing="0">
+						<a class="loginBtn" href="https://www.google.com"
+							>Login to Veemo Survey</a
+						>
+					</td>
+				</tr>
+			</table>
+			<table align="center" style="padding: 12px">
+				<tr align="center">
+					<td align="center">
+						<div style="display: flex">
+							<span
+								style="
+									color: #001f3d;
+									width: 50%;
+									opacity: 0.7;
+									font-size: 12px;
+									margin-top: 4px;
+									text-align: end;
+								"
+								>Powered By</span
+							>
+							<img
+								height="20px"
+								src="https://veemosupport.xyz/support/static/media/logo.2fec6522.svg"
+								alt="Brand logo"
+								style="margin-left: 6px"
+							/>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
 </html>
